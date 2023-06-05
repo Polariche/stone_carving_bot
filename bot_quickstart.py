@@ -14,12 +14,7 @@ class MyClient(discord.Client):
 
         self.tree = app_commands.CommandTree(self)
         self.games = {}
-
-    async def setup_hook(self):
-        # This copies the global commands over to your guild.
-        for guild in self.guilds:
-            self.tree.copy_global_to(guild=guild)
-            await self.tree.sync(guild=guild)
+        
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -50,6 +45,11 @@ def load_game_session(client, user_id, guild_id):
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
+
+    # This copies the global commands over to your guild.
+    for guild in client.guilds:
+        client.tree.copy_global_to(guild=guild)
+        await client.tree.sync(guild=guild)
 
 @client.event
 async def on_reaction_add(reaction, user):
