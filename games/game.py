@@ -30,6 +30,12 @@ class Game():
     def play_option(self, option):
         return
 
+    def is_game_over(self):
+        return False
+
+    def reset(self):
+        self.display_id = -1
+
     async def create_new_display(self, interaction):
         channel = interaction.channel
 
@@ -56,10 +62,17 @@ class Game():
             self.play_option(self.option_emojis[str(reaction.emoji)])
             await reaction.message.edit(content=self.generate_display_text())
 
-        await reaction.remove(user)
+        if self.is_game_over():
+            self.reset()
+
+            for emoji in reversed(self.option_emojis.keys()):
+                await reaction.message.clear_reaction(emoji)  
+
+        else:
+            await reaction.remove(user)
+
 
     def check_permission(self, user):
-
         if self.permission == "모두":
             return True 
 

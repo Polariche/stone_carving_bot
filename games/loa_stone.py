@@ -22,6 +22,7 @@ class LOA_Stone(Game):
         self.stones = -np.ones((3,10), dtype=np.int8)
 
         self.tries_hist = []
+        self.display_id = -1
 
     def up_prob(self):
         self.prob = min(self.prob+10, upper_cap)
@@ -43,6 +44,9 @@ class LOA_Stone(Game):
 
     def available_options(self):
         return np.arange(3)[self.tries() < 10]
+
+    def is_game_over(self):
+        return self.tries_total() >= self.max_tries()
     
     def play_option(self, choice):
         if choice == 'quit':
@@ -50,7 +54,7 @@ class LOA_Stone(Game):
             return True
 
         # if no more tries left
-        if self.tries_total() >= self.max_tries():
+        if self.is_game_over():
             return False
 
         # validate our choice
