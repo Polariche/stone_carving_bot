@@ -1,6 +1,9 @@
+from typing import Literal, Union, Optional
+import discord
+
 class Game():
 
-    def __init__(self, guild, user):
+    def __init__(self, guild, user, permission, permission_user):
         #self.id =  #snowflake, maybe?
 
         self.guild_id = guild.id
@@ -8,6 +11,18 @@ class Game():
 
         self.display_id = -1
         self.option_emojis = {}
+
+        self.modify_permission(permission, permission_user)
+
+    def modify_permission(self, permission: Optional[Literal["모두", "나만", "이사람만"]] = "모두", permission_user: Optional[Union[discord.User, discord.Role]] = None):
+        if permission_user is None:
+            permission_user = discord.Object(id=self.user_id)
+
+        if permission == "이사람만" and permission_user.id == self.user_id:
+            permission = "나만"
+
+        self.permission = permission
+        self.permission_user_id = permission_user.id
 
     def generate_display_text(self):
         return "This is a sample display for a game"
@@ -36,7 +51,22 @@ class Game():
 
 
     async def reaction_input(self, reaction, user):
-        self.play_option(self.option_emojis[str(reaction.emoji)])
+        if self.check_permission(user):
 
-        await reaction.message.edit(content=self.generate_display_text())
+            self.play_option(self.option_emojis[str(reaction.emoji)])
+            await reaction.message.edit(content=self.generate_display_text())
+
         await reaction.remove(user)
+
+    def check_permission(self, user):
+
+        if self.permission == "모두":
+            return True 
+
+        if self.user_id == user.id:
+            return True
+
+        if self.permission == "이사람만" and user.id == self.permission_user_id:
+            return True
+
+        return False

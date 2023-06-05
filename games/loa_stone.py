@@ -8,8 +8,8 @@ lower_cap = 25
 
 class LOA_Stone(Game):
 
-    def __init__(self, guild, user):
-        super().__init__(guild, user)
+    def __init__(self, guild, user, permission, permission_user):
+        super().__init__(guild, user, permission, permission_user)
 
         self.option_emojis = {"1️⃣":0, "2️⃣":1, "3️⃣":2, '🖕': 'quit'}
         self.reset()
@@ -91,6 +91,10 @@ class LOA_Stone(Game):
         stones[stones < 0] = 3
 
         mention_display = f'<@{self.user_id}>'
+
+        if self.permission == "이사람만" and self.permission_user_id != self.user_id:
+            mention_display += f' <@{self.permission_user_id}>' 
+
         display = '\n'.join([' '.join([emojis[c] for c in s]) for i,s in enumerate(stones)])
         result_display = f"{result[0]}/{result[1]}/{result[2]} 돌을 깎으셨습니다."
 
