@@ -86,7 +86,6 @@ class LOA_Stone(Game):
         stones[2][stones[2] > 0] = 2
         stones[stones < 0] = 3
 
-
         mention_display = f'<@{self.user_id}>'
         display = '\n'.join([' '.join([emojis[c] for c in s]) for i,s in enumerate(stones)])
         result_display = f"{result[0]}/{result[1]}/{result[2]} 돌을 깎으셨습니다."
@@ -98,24 +97,3 @@ class LOA_Stone(Game):
             display += " " + prob_display
 
         return display
-
-
-def game():
-    stonegame = LOA_Stone()
-
-    while (stonegame.tries_total() < 30):
-        options = stonegame.available_options()
-        choice = random.choice(options) # replace with user input
-        stonegame.play_option(choice)
-
-    return [stonegame.tries_hist
-            ,stonegame.stones
-            ,stonegame.result()]
-
-
-if __name__ == "__main__":
-
-    results = game()
-
-    for r in results:
-        print(r)
