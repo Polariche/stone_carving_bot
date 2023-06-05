@@ -11,7 +11,7 @@ class LOA_Stone(Game):
     def __init__(self, guild, user):
         super().__init__(guild, user)
 
-        self.option_emojis = {"1️⃣":0, "2️⃣":1, "3️⃣":2}
+        self.option_emojis = {"1️⃣":0, "2️⃣":1, "3️⃣":2, '🖕': 'quit'}
         self.reset()
 
     def emoji_to_option(self, emoji):
@@ -45,6 +45,10 @@ class LOA_Stone(Game):
         return np.arange(3)[self.tries() < 10]
     
     def play_option(self, choice):
+        if choice == 'quit':
+            self.reset()
+            return True
+
         # if no more tries left
         if self.tries_total() >= self.max_tries():
             return False
