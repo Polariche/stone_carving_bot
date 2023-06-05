@@ -8,46 +8,31 @@ intents = discord.Intents.default()
 intents.message_content = True
 
 client = discord.Client(intents=intents)
-client.option_emojis = {"1️⃣":0, "2️⃣":1, "3️⃣":2}
 
-
-def generate_display_text(stonegame):
-    emojis = [":black_medium_small_square:",
-                   ":small_blue_diamond:",
-                   ":small_orange_diamond:",
-                   "◇"]
-
-    result = stonegame.result()
-
-    stones = stonegame.stones.copy()
-    stones[2][stones[2] > 0] = 2
-    stones[stones < 0] = 3
-
-    display = '\n'.join([' '.join([emojis[c] for c in s]) for i,s in enumerate(stones)])
-
-    result_display = f"{result[0]}/{result[1]}/{result[2]} 돌을 깎으셨습니다."
-    display += "\n" + result_display
-
-    print(stonegame.prob)
-
-    if (stonegame.tries_total() < stonegame.max_tries()):
-        prob_display = f"현재 확률: {stonegame.prob}%"
-        display += " " + prob_display
-
-    return display
-
+client.games = {}
 
 async def create_game_session(client, message):
-    stonegame = LOA_Stone()
+    # the pair of (guild_id, user_id) works as a key for the game session
+    guild = message.guild   
+    user = message.author
+    
+    print (f"Creating a game for ({guild.id}, {user.id})")
+    #created_date = ""
 
-    display = generate_display_text(stonegame)
+    game = LOA_Stone(guild, user)
+    client.games[(guild.id, user.id)] = game
+
+    display = game.generate_display_text()
     display_message = await message.channel.send(display)
 
-    client.game = stonegame
-    client.game_message = display_message
+    game.attach_message_id(display_message.id)
 
-    for emoji in client.option_emojis.keys():
+    for emoji in game.option_emojis.keys():
         await display_message.add_reaction(emoji)   
+
+
+def load_game_session(client, user_id, guild_id):
+    pass
 
 
 @client.event
@@ -61,14 +46,8 @@ async def on_message(message):
     if message.author == client.user:
         return
 
-    if message.content.startswith('돌깎') or message.content.startswith('야 돌') or message.content.startswith('야돌') or message.content.startswith('야돌'):
+    if message.content.startswith('테스트'):
         await create_game_session(client, message)
-
-        """while (stonegame.tries_total() < 20):
-            
-            choice = random.choice(options) # replace with user input
-            stonegame.try_option(choice)
-        """
 
 
 @client.event
@@ -76,12 +55,23 @@ async def on_reaction_add(reaction, user):
     if user == client.user:
         return
 
-    if reaction.message == client.game_message:
+    message = reaction.message
+    guild = message.guild
+    owner = message.mentions[0]
+
+    # see if the (guild_id, author_id) has a game
+    try:
+        game = client.games[(guild.id, owner.id)]
+
+    except KeyError:
+        return
+    
+    if reaction.message.id in game.display_messages:
+    
         print(f"My display has received an emoji: {reaction.emoji}")
 
-        client.game.try_option(client.option_emojis[str(reaction.emoji)])
-
-        await client.game_message.edit(content=generate_display_text(client.game))
+        game.play_option(game.emoji_to_option(reaction.emoji))
+        await message.edit(content=game.generate_display_text())
 
         await reaction.remove(user)
 

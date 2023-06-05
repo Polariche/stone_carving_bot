@@ -1,14 +1,21 @@
 
 import random;
 import numpy as np
+from games.game import Game
 
 upper_cap = 75
 lower_cap = 25
 
-class LOA_Stone():
+class LOA_Stone(Game):
 
-    def __init__(self):
+    def __init__(self, guild, user):
+        super().__init__(guild, user)
+
+        self.option_emojis = {"1️⃣":0, "2️⃣":1, "3️⃣":2}
         self.reset()
+
+    def emoji_to_option(self, emoji):
+        return self.option_emojis[str(emoji)]
 
     def reset(self):
         self.prob = upper_cap
@@ -34,18 +41,16 @@ class LOA_Stone():
     def max_tries(self):
         return self.stones.size
 
-    def options(self):
+    def available_options(self):
         return np.arange(3)[self.tries() < 10]
-
     
-    def try_option(self, choice):
-
+    def play_option(self, choice):
         # if no more tries left
         if self.tries_total() >= self.max_tries():
             return False
 
         # validate our choice
-        if choice not in self.options():
+        if choice not in self.available_options():
             return False
 
         idx = self.tries()
@@ -69,13 +74,39 @@ class LOA_Stone():
         stone_done[stone_done < 0] = 0
         return np.sum(stone_done, axis=1)
 
+    def generate_display_text(self):
+        emojis = [":black_medium_small_square:",
+                       ":small_blue_diamond:",
+                       ":small_orange_diamond:",
+                       "◇"]
+
+        result = self.result()
+
+        stones = self.stones.copy()
+        stones[2][stones[2] > 0] = 2
+        stones[stones < 0] = 3
+
+
+        mention_display = f'<@{self.user_id}>'
+        display = '\n'.join([' '.join([emojis[c] for c in s]) for i,s in enumerate(stones)])
+        result_display = f"{result[0]}/{result[1]}/{result[2]} 돌을 깎으셨습니다."
+
+        display = mention_display + "\n" + display + "\n" + result_display
+
+        if (self.tries_total() < self.max_tries()):
+            prob_display = f"현재 확률: {self.prob}%"
+            display += " " + prob_display
+
+        return display
+
+
 def game():
     stonegame = LOA_Stone()
 
     while (stonegame.tries_total() < 30):
-        options = stonegame.options()
+        options = stonegame.available_options()
         choice = random.choice(options) # replace with user input
-        stonegame.try_option(choice)
+        stonegame.play_option(choice)
 
     return [stonegame.tries_hist
             ,stonegame.stones
