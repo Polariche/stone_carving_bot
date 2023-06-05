@@ -7,7 +7,6 @@ from discord.ext import commands
 from games.loa_stone import LOA_Stone 
 import random
 
-MY_GUILD = discord.Object(id=1005844989076586496)
 
 class MyClient(discord.Client):
     def __init__(self, *, intents: discord.Intents):
@@ -18,8 +17,9 @@ class MyClient(discord.Client):
 
     async def setup_hook(self):
         # This copies the global commands over to your guild.
-        self.tree.copy_global_to(guild=MY_GUILD)
-        await self.tree.sync(guild=MY_GUILD)
+        for guild in self.guilds:
+            self.tree.copy_global_to(guild=guild)
+            await self.tree.sync(guild=guild)
 
 intents = discord.Intents.default()
 intents.message_content = True
