@@ -22,7 +22,6 @@ class LOA_Stone(Game):
         self.stones = -np.ones((3,10), dtype=np.int8)
 
         self.tries_hist = []
-        self.display_id = -1
 
     def up_prob(self):
         self.prob = min(self.prob+10, upper_cap)

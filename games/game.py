@@ -64,6 +64,7 @@ class Game():
 
         if self.is_game_over():
             self.reset()
+            self.display_id = -1
 
             for emoji in reversed(self.option_emojis.keys()):
                 await reaction.message.clear_reaction(emoji)  
