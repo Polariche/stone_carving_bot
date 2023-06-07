@@ -1,4 +1,8 @@
 {
+"url": "https://developer-lostark.game.onstove.com/auctions/items",
+"method": "POST",
+"data": 
+{
   "ItemLevelMin": 0,
   "ItemLevelMax": 0,
   "ItemGradeQuality": null,
@@ -32,4 +36,5 @@
   "ItemName": null,
   "PageNo": 0,
   "SortCondition": "ASC"
+}
 }

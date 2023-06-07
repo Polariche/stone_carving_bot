@@ -1,78 +1,67 @@
 import json
-import requests
+import aiohttp
+import asyncio
 
 class Query():
-    def __init__(self, url, get_or_post, query_json_path, **query_kwargs):
-        self.url = url
-        self.get_or_post = get_or_post
+    def __init__(self, query_json_path, **query_kwargs):
+        with open(query_json_path, 'r') as f:
+            query_obj = json.load(f)
 
-        self.query_json_path = query_json_path
+            for k,v in query_obj.items():
+                setattr(self, k, v)
 
-        self.query_kwargs = query_kwargs
+        self.fill_query(**query_kwargs)
 
-        self.response_f = {
-                'post' : requests.post,
-                'get' : requests.get
-        }
+    def fill_query(self, **query_kwargs):
+        pass
 
-    def headers(self, key):
-        return {
+    async def fetch(self, session):
+        if self.method == "GET":
+            f = session.get
+        elif self.method == "POST":
+            f = session.post 
+
+        data = getattr(self, 'data', {})
+            
+        async with f(self.url, data=json.dumps(data)) as response:
+            self.response_headers = response.headers
+            json_result = await response.json()
+
+            return json_result
+
+class StoneQuery(Query):
+    def __init__(self, **query_kwargs):
+        super().__init__('queries/auction_search_stones.json', **query_kwargs)
+
+    def fill_query(self, **query_kwargs):
+        engraves = query_kwargs["engraves"]
+        self.data["EtcOptions"][0]["SecondOption"] = engraves[0]
+        self.data["EtcOptions"][1]["SecondOption"] = engraves[1]
+
+class AuctionOptionsQuery(Query):
+    def __init__(self):
+        super().__init__('queries/auction_options.json')
+
+
+with open("tokens/smilegate.token", "r") as f:
+    key = f.readlines()[0]
+
+async def client():
+    headers = {
                     'accept': 'application/json',
                     'Content-Type': 'application/json',
                     'authorization': f'bearer {key}'
                 }
 
-    def get_query_template(self):
-        with open(self.query_json_path, 'r') as f:
-            query = json.load(f)
+    async with aiohttp.ClientSession(headers=headers) as session:
+        query = StoneQuery(engraves=[118, 299])
+        query_result = await query.fetch(session)
+        print(query_result)
+        print(query.response_headers)
 
-        return query
+loop = asyncio.get_event_loop()
+loop.run_until_complete(client())
 
-    def fill_query(self):
-        return self.get_query_template()
-
-    def get_response(self, key):
-        request_kwargs = {}
-        request_kwargs['headers'] = self.headers(key)
-
-        try:
-            request_kwargs['data'] = json.dumps(self.fill_query())
-        except:
-            pass
-
-        response = self.response_f[self.get_or_post](self.url, **request_kwargs)
-        return response
-
-
-class StoneQuery(Query):
-    def __init__(self, **query_kwargs):
-        super().__init__('https://developer-lostark.game.onstove.com/auctions/items', 
-                            'post', 
-                            'json/stone_query.json', 
-                            **query_kwargs)
-
-    def fill_query(self):
-        query = self.get_query_template()
-
-        engraves = self.query_kwargs["engraves"]
-        query["EtcOptions"][0]["SecondOption"] = engraves[0]
-        query["EtcOptions"][1]["SecondOption"] = engraves[1]
-
-        return query
-
-
-class AuctionOptionsQuery(Query):
-    def __init__(self, **query_kwargs):
-        super().__init__('https://developer-lostark.game.onstove.com/auctions/options', 
-                            'get', 
-                            '', 
-                            **query_kwargs)
-
-
-with open("./smilegate.token", "r") as f:
-    key = f.readlines()[0]
-
-print(json.loads(StoneQuery(engraves=[118, 299]).get_response(key).text)['Items'][0])
 
 
 
