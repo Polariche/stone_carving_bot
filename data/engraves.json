@@ -1,0 +1,284 @@
+[
+    {
+        "Value": 118,
+        "Text": "원한",
+        "Aliases": ["원"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 123,
+        "Text": "굳은 의지",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 237,
+        "Text": "실드 관통",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 243,
+        "Text": "강령술",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 247,
+        "Text": "저주받은 인형",
+        "Aliases": ["저받", "저"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 255,
+        "Text": "각성",
+        "Aliases": ["각"],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 111,
+        "Text": "안정된 상태",
+        "Aliases": ["안상", "안"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 140,
+        "Text": "위기 모면",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 238,
+        "Text": "달인의 저력",
+        "Aliases": ["달저", "달"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 240,
+        "Text": "중갑 착용",
+        "Aliases": ["중착", "중"],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 242,
+        "Text": "강화 방패",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 245,
+        "Text": "부러진 뼈",
+        "Aliases": ["부뼈"],
+        "Tags": []
+    },
+    {
+        "Value": 248,
+        "Text": "승부사",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 249,
+        "Text": "기습의 대가",
+        "Aliases": ["기대", "기"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 251,
+        "Text": "마나의 흐름",
+        "Aliases": ["마흐", "마"],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 254,
+        "Text": "돌격대장",
+        "Aliases": ["돌대", "돌"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 107,
+        "Text": "약자 무시",
+        "Aliases": ["약무"],
+        "Tags": []
+    },
+    {
+        "Value": 109,
+        "Text": "정기 흡수",
+        "Aliases": ["정흡", "정"],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 110,
+        "Text": "에테르 포식자",
+        "Aliases": ["에포"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 121,
+        "Text": "슈퍼 차지",
+        "Aliases": ["슈차", "슈"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 134,
+        "Text": "구슬동자",
+        "Aliases": ["구동", "구"],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 141,
+        "Text": "예리한 둔기",
+        "Aliases": ["예둔", "예"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 235,
+        "Text": "불굴",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 239,
+        "Text": "여신의 가호",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 244,
+        "Text": "선수필승",
+        "Aliases": ["선필"],
+        "Tags": []
+    },
+    {
+        "Value": 142,
+        "Text": "급소 타격",
+        "Aliases": ["급타", "급"],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 236,
+        "Text": "분쇄의 주먹",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 241,
+        "Text": "폭발물 전문가",
+        "Aliases": ["폭전", "폭"],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 246,
+        "Text": "번개의 분노",
+        "Aliases": ["번분"],
+        "Tags": []
+    },
+    {
+        "Value": 253,
+        "Text": "바리케이드",
+        "Aliases": ["바리", "바"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 168,
+        "Text": "마나 효율 증가",
+        "Aliases": ["마효증", "마효"],
+        "Tags": []
+    },
+    {
+        "Value": 167,
+        "Text": "최대 마나 증가",
+        "Aliases": ["최마증", "최마", "최"],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 202,
+        "Text": "탈출의 명수",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 288,
+        "Text": "결투의 대가",
+        "Aliases": ["결대", "결"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 295,
+        "Text": "질량 증가",
+        "Aliases": ["질량증가", "질증", "질"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 296,
+        "Text": "추진력",
+        "Aliases": ["추"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 297,
+        "Text": "타격의 대가",
+        "Aliases": ["타격의대가", "타대", "타"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 298,
+        "Text": "시선 집중",
+        "Aliases": ["시집", "시"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 299,
+        "Text": "아드레날린",
+        "Aliases": ["아드", "아"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 300,
+        "Text": "속전속결",
+        "Aliases": ["속속", "속"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 301,
+        "Text": "전문의",
+        "Aliases": ["전"],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 302,
+        "Text": "긴급구조",
+        "Aliases": [],
+        "Tags": ["서폿"]
+    },
+    {
+        "Value": 303,
+        "Text": "정밀 단도",
+        "Aliases": ["정단", "정"],
+        "Tags": ["딜러"]
+    },
+    {
+        "Value": 800,
+        "Text": "공격력 감소",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 801,
+        "Text": "방어력 감소",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 802,
+        "Text": "공격속도 감소",
+        "Aliases": [],
+        "Tags": []
+    },
+    {
+        "Value": 803,
+        "Text": "이동속도 감소",
+        "Aliases": [],
+        "Tags": []
+    }
+]
