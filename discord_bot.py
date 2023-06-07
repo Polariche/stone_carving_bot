@@ -5,9 +5,15 @@ from typing import Literal, Union, Optional
 import discord
 from discord import app_commands
 from discord.ext import commands
+import aiohttp
 
 from games.loa_stone import LOA_Stone 
 import random
+
+from query_queue import fetch
+from query import *
+
+import pandas as pd
 
 
 class MyClient(discord.Client):
@@ -95,6 +101,22 @@ async def cmd_my_game(interaction: discord.Interaction):
 async def cmd_your_game(interaction: discord.Interaction, user: Union[discord.User]):
     await create_or_load(interaction, "이사람만", user)
 
+@client.tree.command(name='돌값', description="경매장에서 최저 돌값을 검색합니다.")
+async def search_stone_price(interaction: discord.Interaction, id1: int, id2: int):
+    # TODO : replace this with queue-based system
+    query = StoneQuery(id1, id2)
+    query_result = await fetch(query)   
+
+
+    df = pd.DataFrame({'option1':[x["Options"][0]["OptionName"] for x in query_result["Items"]],
+                        'option2':[x["Options"][1]["OptionName"] for x in query_result["Items"]],
+                        'option3':[x["Options"][2]["OptionName"] for x in query_result["Items"]],
+                        'prices':[x["AuctionInfo"]["BuyPrice"] for x in query_result["Items"]]})
+
+    display = '\n'.join([f"{l['option1']: <8} | {l['option2']: <8} | {l['option3']: <8} | {str(l['prices']): <8}" for _, l in df.iterrows()])
+    display = "```"+display+"```"
+
+    await interaction.response.send_message(display)
 
 with open("tokens/discord.token", "r") as f:
     token = f.readlines()[0]
