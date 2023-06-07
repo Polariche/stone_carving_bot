@@ -1,0 +1,35 @@
+{
+  "ItemLevelMin": 0,
+  "ItemLevelMax": 0,
+  "ItemGradeQuality": null,
+  "SkillOptions": [
+    {
+      "FirstOption": null,
+      "SecondOption": null,
+      "MinValue": null,
+      "MaxValue": null
+    }
+  ],
+  "EtcOptions": [
+    {
+      "FirstOption": 3,
+      "SecondOption": null,
+      "MinValue": null,
+      "MaxValue": null
+    },
+    {
+      "FirstOption": 3,
+      "SecondOption": null,
+      "MinValue": null,
+      "MaxValue": null
+    }
+  ],
+  "Sort": "BUY_PRICE",
+  "CategoryCode": 30000,
+  "CharacterClass": null,
+  "ItemTier": null,
+  "ItemGrade": "유물",
+  "ItemName": null,
+  "PageNo": 0,
+  "SortCondition": "ASC"
+}
