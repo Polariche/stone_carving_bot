@@ -126,6 +126,23 @@ async def search_stone_price(interaction: discord.Interaction,
 
     await interaction.response.send_message(display)
 
+
+materials = {"찬란한 명예의 돌파석": 66110224, "최상급 오레하 융화 재료": 6861011, "정제된 파괴강석": 66102005, "정제된 수호강석": 66102105}
+material_names = tuple(map(str, materials.keys()))
+
+@client.tree.command(name='재료값', description="거래소에서 강화 재료들의 최저값을 검색합니다.")
+async def search_materials_price(interaction: discord.Interaction, name:Literal[material_names]):
+
+    queries = [
+                MarketItemsQuery(materials[name])  # 찬명돌
+                ]
+    query_result = await fetch(queries[0])  
+    query_result = query_result[0] 
+
+    display = f'`{query_result["Name"]}`의 현재 평균 판매가는 `{query_result["Stats"][0]["AvgPrice"]} g` 입니다.'
+
+    await interaction.response.send_message(display)
+
 with open("tokens/discord.token", "r") as f:
     token = f.readlines()[0]
 

@@ -1,6 +1,7 @@
 import json
 import aiohttp
 import asyncio
+import os
 
 class Query():
     def __init__(self, query_json_path, *args, **kwargs):
@@ -10,9 +11,15 @@ class Query():
             for k,v in query_obj.items():
                 setattr(self, k, v)
 
-        self.fill_query(*args, **kwargs)
+        if self.method == "GET":
+            self.fill_url(*args, **kwargs)
+        elif self.method == "POST":
+            self.fill_query(*args, **kwargs)
 
     def fill_query(self, *args, **kwargs):
+        pass
+
+    def fill_url(self, *args, **kwargs):
         pass
 
     async def fetch(self, session):
@@ -36,3 +43,10 @@ class StoneQuery(Query):
 class AuctionOptionsQuery(Query):
     def __init__(self):
         super().__init__('queries/auction_options.json')
+
+class MarketItemsQuery(Query):
+    def __init__(self, item_id):
+        super().__init__('queries/market_items.json',  str(item_id))
+
+    def fill_url(self, *args, **kwargs):
+        self.url=os.path.join(self.url, args[0])
