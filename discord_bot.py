@@ -96,7 +96,10 @@ async def cmd_your_game(interaction: discord.Interaction, user: Union[discord.Us
     await create_or_load(interaction, "이사람만", user)
 
 
-with open(".token", "r") as f:
+with open("discord.token", "r") as f:
     token = f.readlines()[0]
+
+with open("smilegate.token", "r") as f:
+    smg_api_key = f.readlines()[0]
 
 client.run(token)
