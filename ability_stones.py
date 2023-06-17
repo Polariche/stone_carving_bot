@@ -1,5 +1,6 @@
 import json
 
+from typing import Literal, Union
 from collections import defaultdict
 
 def remove_whitespace(s):

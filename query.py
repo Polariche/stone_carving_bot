@@ -50,3 +50,11 @@ class MarketItemsQuery(Query):
 
     def fill_url(self, *args, **kwargs):
         self.url=os.path.join(self.url, args[0])
+
+class GemQuery(Query):
+    def __init__(self, level, gem_type):
+        super().__init__('queries/auction_search_gems.json', level, gem_type)
+
+    def fill_query(self, *args, **kwargs):
+        level, gem_type = args
+        self.data["ItemName"] = f"{level}레벨 {gem_type}"

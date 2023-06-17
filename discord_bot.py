@@ -15,6 +15,7 @@ from query import *
 import ability_stones
 
 import pandas as pd
+import re
 
 
 class MyClient(discord.Client):
@@ -127,6 +128,7 @@ async def search_stone_price(interaction: discord.Interaction,
     await interaction.response.send_message(display)
 
 
+# TODO : move this to a data file
 materials = {"찬란한 명예의 돌파석": 66110224, "최상급 오레하 융화 재료": 6861011, "정제된 파괴강석": 66102005, "정제된 수호강석": 66102105}
 material_names = tuple(map(str, materials.keys()))
 
@@ -140,6 +142,26 @@ async def search_materials_price(interaction: discord.Interaction, name:Literal[
     query_result = query_result[0] 
 
     display = f'`{query_result["Name"]}`의 현재 평균 판매가는 `{query_result["Stats"][0]["AvgPrice"]} g` 입니다.'
+
+    await interaction.response.send_message(display)
+
+
+@client.tree.command(name='보석값', description="경매소에서 지정 보석의 최저가를 검색합니다.")
+async def search_materials_price(interaction: discord.Interaction, name: str):
+
+    p = re.compile('([0-9]+)*\s*(\w+)')
+    m = p.match(name)
+    g = m.groups()
+
+    query = GemQuery(*g)
+    query_result = await fetch(query)  
+
+    try:
+        query_result = query_result["Items"][0]
+        display = f'`{query_result["Name"]}`의 현재 최저가는 `{query_result["AuctionInfo"]["BuyPrice"]} g` 입니다.'
+        
+    except:
+        display = f'`{name}`에 대한 결과를 찾지 못했습니다.'
 
     await interaction.response.send_message(display)
 

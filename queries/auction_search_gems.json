@@ -1,0 +1,28 @@
+{
+"url": "https://developer-lostark.game.onstove.com/auctions/items",
+"method": "POST",
+"data": 
+{
+  "ItemLevelMin": 0,
+  "ItemLevelMax": 0,
+  "ItemGradeQuality": null,
+  "SkillOptions": [
+    {
+      "FirstOption": null,
+      "SecondOption": null,
+      "MinValue": null,
+      "MaxValue": null
+    }
+  ],
+  "EtcOptions": [
+  ],
+  "Sort": "BUY_PRICE",
+  "CategoryCode": 210000,
+  "CharacterClass": null,
+  "ItemTier": 3,
+  "ItemGrade": null,
+  "ItemName": null,
+  "PageNo": 0,
+  "SortCondition": "ASC"
+}
+}

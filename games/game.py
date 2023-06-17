@@ -34,6 +34,10 @@ class Game():
         return False
 
     def reset(self):
+        pass
+
+    def game_over(self):
+        self.reset()
         self.display_id = -1
 
     async def create_new_display(self, interaction):
@@ -55,22 +59,28 @@ class Game():
 
         self.display_id = display_message.id
 
+    async def input(self, option):
+        if self.check_permission(user):
+            self.play_option(option)
+
+        if self.is_game_over():
+            self.game_over()
 
     async def reaction_input(self, reaction, user):
         if self.check_permission(user):
 
             self.play_option(self.option_emojis[str(reaction.emoji)])
-            await reaction.message.edit(content=self.generate_display_text())
+            await reaction.message.edit(content=self.generate_display_text())   # discord hook
 
         if self.is_game_over():
             self.reset()
             self.display_id = -1
 
-            for emoji in reversed(self.option_emojis.keys()):
-                await reaction.message.clear_reaction(emoji)  
+            for emoji in reversed(self.option_emojis.keys()):   # discord hook
+                await reaction.message.clear_reaction(emoji)    # discord hook
 
         else:
-            await reaction.remove(user)
+            await reaction.remove(user)                           # discord hook
 
 
     def check_permission(self, user):
