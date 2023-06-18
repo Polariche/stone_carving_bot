@@ -6,6 +6,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 import aiohttp
+import asyncio
 
 from games.loa_stone import LOA_Stone 
 import random
@@ -149,19 +150,31 @@ async def search_materials_price(interaction: discord.Interaction, name:Literal[
 @client.tree.command(name='보석값', description="경매소에서 지정 보석의 최저가를 검색합니다.")
 async def search_materials_price(interaction: discord.Interaction, name: str):
 
-    p = re.compile('([0-9]+)*\s*(\w+)')
+    p = re.compile('[0-9]+')
     m = p.match(name)
-    g = m.groups()
 
-    query = GemQuery(*g)
-    query_result = await fetch(query)  
+    if m is None:
+        display = '검색하려는 보석의 레벨을 입력해주세요.'
 
-    try:
-        query_result = query_result["Items"][0]
-        display = f'`{query_result["Name"]}`의 현재 최저가는 `{query_result["AuctionInfo"]["BuyPrice"]} g` 입니다.'
-        
-    except:
-        display = f'`{name}`에 대한 결과를 찾지 못했습니다.'
+    else:
+        level = int(m[0])
+
+        p = re.compile('[멸홍]')
+        m = p.finditer(name)
+        gemtypes = {a[0] for a in m}
+
+        if len(gemtypes) == 0:
+            gemtypes = {'멸', '홍'}
+            
+        query_results = await asyncio.gather(*[fetch(GemQuery(level, gemtype)) for gemtype in gemtypes])
+
+        display=[]
+
+        for query_result in query_results:
+            query_result = query_result["Items"][0]
+            display += [f'`{query_result["Name"]}`의 현재 최저가는 `{query_result["AuctionInfo"]["BuyPrice"]} g` 입니다.']
+
+        display = '\n'.join(display)
 
     await interaction.response.send_message(display)
 
