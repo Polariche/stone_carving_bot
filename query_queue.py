@@ -31,9 +31,15 @@ async def queue_loop(app):
             query = app.queue.pop()
             await fetch(query)
 
+            # if we meet the end quota (429 response), copy our query, and retry
             h = query.response_headers
-            app.limits = {'reset': int(h['x-ratelimit-reset']), 
-                            'remaining': int(h['x-ratelimit-remaining'])}
+
+            if (query.status == 429):
+                app.queue.append(query.fresh_copy())
+
+            else:
+                app.limits = {'reset': int(h['x-ratelimit-reset']), 
+                                'remaining': int(h['x-ratelimit-remaining'])}
 
             print(app.limits)
 
@@ -55,6 +61,8 @@ app = web.Application()
 routes = web.RouteTableDef()
 
 async def execute(queries):
+    print(queries)
+
     app.queue.extend(queries)
     query_results = await asyncio.gather(*[q.result for q in queries])
 

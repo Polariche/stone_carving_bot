@@ -9,6 +9,10 @@ class Query():
     loop = None
 
     def __init__(self, query_json_path, *args, **kwargs):
+        self.query_json_path = query_json_path
+        self.args = args
+        self.kwargs = kwargs
+
         with open(query_json_path, 'r') as f:
             query_obj = json.load(f)
 
@@ -36,12 +40,17 @@ class Query():
             
         async with session.request(self.method, self.url, data=json.dumps(data)) as response:
             self.response_headers = response.headers
+            self.status = response.status
+
             json_result = await response.json()
 
             if self.result is not None:
                 self.result.set_result(json_result)
 
             return json_result
+
+    def fresh_copy(self):
+        return Query(self.query_json_path, self.args, self.kwargs)
 
 class StoneQuery(Query):
     def __init__(self, id1, id2):
