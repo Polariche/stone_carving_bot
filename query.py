@@ -3,7 +3,11 @@ import aiohttp
 import asyncio
 import os
 
+from asyncio import Future
+
 class Query():
+    loop = None
+
     def __init__(self, query_json_path, *args, **kwargs):
         with open(query_json_path, 'r') as f:
             query_obj = json.load(f)
@@ -15,6 +19,11 @@ class Query():
             self.fill_url(*args, **kwargs)
         elif self.method == "POST":
             self.fill_query(*args, **kwargs)
+
+        if Query.loop is not None:
+            self.result = Query.loop.create_future()
+        else:
+            self.result = None
 
     def fill_query(self, *args, **kwargs):
         pass
@@ -28,6 +37,9 @@ class Query():
         async with session.request(self.method, self.url, data=json.dumps(data)) as response:
             self.response_headers = response.headers
             json_result = await response.json()
+
+            if self.result is not None:
+                self.result.set_result(json_result)
 
             return json_result
 
