@@ -1,8 +1,7 @@
 import aiohttp
 from aiohttp import web
 import asyncio
-import pandas as pd
-
+import os
 from query import *
 from collections import deque
 import re
@@ -10,7 +9,8 @@ import time
 
 # ------------------------------------------ using api -----------------------------------------------
 
-with open("tokens/smilegate.token", "r") as f:
+key_path = os.environ['SMILEGATE_KEY']
+with open(key_path, "r") as f:
     key = f.readlines()[0]
 
 headers = {

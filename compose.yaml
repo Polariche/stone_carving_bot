@@ -1,0 +1,32 @@
+services:
+  smilegate_api:
+    build: smilegate_api
+    environment:
+       SMILEGATE_KEY: /run/secrets/smilegate
+    secrets:
+      - smilegate
+    networks:
+      - net
+
+  discord_bot:
+    build: bot
+    environment:
+       DISCORD_KEY: /run/secrets/discord
+       SMILEGATE_URL: http://smilegate_api:8080
+    secrets:
+      - discord
+    networks:
+      - net
+
+
+secrets:
+  discord:
+    file: ./secrets/discord.token
+
+  smilegate:
+    file: ./secrets/smilegate.token
+
+networks:
+  net:
+    driver: bridge
+

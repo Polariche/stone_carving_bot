@@ -11,12 +11,11 @@ import asyncio
 from games.loa_stone import LOA_Stone 
 import random
 
-from query_queue import fetch
-from query import *
-import ability_stones
-
 import pandas as pd
 import re
+import os
+
+import ability_stones
 
 
 class MyClient(discord.Client):
@@ -108,14 +107,19 @@ class EngraveTransformer(app_commands.Transformer):
     async def transform(self, interaction: discord.Interaction, name: str) -> int:
         return ability_stones.parse(name)
 
+async def query_from_smilegate(route):
+    async with aiohttp.ClientSession() as session:
+        async with session.request("get", os.path.join(os.environ['SMILEGATE_URL'], route)) as response:
+            return await response.json()
+
 @client.tree.command(name='돌값', description="경매장에서 최저 돌값을 검색합니다.")
 async def search_stone_price(interaction: discord.Interaction, 
                                 id1: app_commands.Transform[int, EngraveTransformer], 
                                 id2: app_commands.Transform[int, EngraveTransformer]):
 
     # TODO : replace this with queue-based system
-    query = StoneQuery(id1, id2)
-    query_result = await fetch(query)   
+    query_results = await query_from_smilegate(f"stone/{id1}/{id2}")
+    query_result = query_results[0]
 
     df = pd.DataFrame({'option1':[x["Options"][0]["OptionName"] for x in query_result["Items"]],
                         'option2':[x["Options"][1]["OptionName"] for x in query_result["Items"]],
@@ -128,7 +132,6 @@ async def search_stone_price(interaction: discord.Interaction,
 
     await interaction.response.send_message(display)
 
-
 # TODO : move this to a data file
 materials = {"찬란한 명예의 돌파석": 66110224, "최상급 오레하 융화 재료": 6861011, "정제된 파괴강석": 66102005, "정제된 수호강석": 66102105}
 material_names = tuple(map(str, materials.keys()))
@@ -136,11 +139,8 @@ material_names = tuple(map(str, materials.keys()))
 @client.tree.command(name='재료값', description="거래소에서 강화 재료들의 최저값을 검색합니다.")
 async def search_materials_price(interaction: discord.Interaction, name:Literal[material_names]):
 
-    queries = [
-                MarketItemsQuery(materials[name])  # 찬명돌
-                ]
-    query_result = await fetch(queries[0])  
-    query_result = query_result[0] 
+    query_results = await query_from_smilegate(f"material/{name}")
+    query_result = query_results[0][0] 
 
     display = f'`{query_result["Name"]}`의 현재 평균 판매가는 `{query_result["Stats"][0]["AvgPrice"]} g` 입니다.'
 
@@ -152,21 +152,13 @@ async def search_materials_price(interaction: discord.Interaction, name: str):
 
     p = re.compile('[0-9]+')
     m = p.match(name)
+    level = m[0]
 
     if m is None:
         display = '검색하려는 보석의 레벨을 입력해주세요.'
 
     else:
-        level = int(m[0])
-
-        p = re.compile('[멸홍]')
-        m = p.finditer(name)
-        gemtypes = {a[0] for a in m}
-
-        if len(gemtypes) == 0:
-            gemtypes = {'멸', '홍'}
-            
-        query_results = await asyncio.gather(*[fetch(GemQuery(level, gemtype)) for gemtype in gemtypes])
+        query_results = await query_from_smilegate(f"gem/{level}/{name}")
 
         display=[]
 
@@ -178,10 +170,8 @@ async def search_materials_price(interaction: discord.Interaction, name: str):
 
     await interaction.response.send_message(display)
 
-with open("tokens/discord.token", "r") as f:
-    token = f.readlines()[0]
+key_path = os.environ['DISCORD_KEY']
+with open(key_path, "r") as f:
+    key = f.readlines()[0]
 
-with open("tokens/smilegate.token", "r") as f:
-    smg_api_key = f.readlines()[0]
-
-client.run(token)
+client.run(key)
